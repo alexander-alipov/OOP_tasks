@@ -53,9 +53,10 @@ class LinkedGraph:
             self.add_vertex(link.v1)  # добавление в общий список v1, если отсутствует
             self.add_vertex(link.v2)  # добавление в общий список v2, если отсутствует
 
-    def dijkstra(self, start_v, stop_v):
+    def dijkstra(self, start_v):
         self._V = len(self._vertex)
         self.start_v = start_v
+        predecessors = {node: None for node in self._vertex}
         values = [1e7] * self._V
         passed_vertices = [False] * self._V
         vert_indx = self._vertex.index(start_v)
@@ -64,13 +65,15 @@ class LinkedGraph:
         dist = 0
 
         for count in range(self._V):
-            adj = [0] * self._V
+            adj = {v: (0, None) for v in range(self._V)}
             for link in self.start_v.links:
-                adj[self._vertex.index(link.v2)] = link.dist
-                adj[self._vertex.index(link.v1)] = link.dist
+                adj[self._vertex.index(link.v2)] = (link.dist, link)
+                adj[self._vertex.index(link.v1)] = (link.dist, link)
+                
             for v in range(self._V):
-                if adj[v] > 0 and passed_vertices[v] == False and values[v] > dist + adj[v]:
-                    values[v] = dist + adj[v]
+                if adj[v][0] > 0 and passed_vertices[v] == False and values[v] > dist + adj[v][0]:
+                    values[v] = dist + adj[v][0]
+                    predecessors[self._vertex[v]] = (self.start_v, adj[v][1])
 
             minimum = 1e7
             for v in range(self._V):
@@ -81,33 +84,22 @@ class LinkedGraph:
             self.start_v = self._vertex[vert_indx]
             dist = values[vert_indx]
 
-        predecessors = {node: None for node in self._vertex}
-        for indx, vert in enumerate(self._vertex):
-            for link in vert.links:
-                if values[indx] == values[self._vertex.index(link.v1)] + link.dist:
-                    predecessors[vert] = (link.v1, link)
-                    break
-                if values[indx] == values[self._vertex.index(link.v2)] + link.dist:
-                    predecessors[vert] = (link.v2, link)
-                    break
-                
         return predecessors
 
-
     def find_path(self, start_v, stop_v):
-        predecessors = self.dijkstra(start_v, stop_v)
+        predecessors = self.dijkstra(start_v)
         path = []
         path_links = []
         path.append(stop_v)
         current_node = predecessors[stop_v]
+        
         while current_node:
             path_links.append(current_node[1])
             path.append(current_node[0])
             current_node = predecessors[current_node[0]]
-
         path.reverse()
         path_links.reverse()
-
+        
         return path, path_links
 
 
