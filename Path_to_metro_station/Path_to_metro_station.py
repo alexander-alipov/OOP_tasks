@@ -69,17 +69,16 @@ class LinkedGraph:
             for link in self.start_v.links:
                 adj[self._vertex.index(link.v2)] = (link.dist, link)
                 adj[self._vertex.index(link.v1)] = (link.dist, link)
-                
+
+            minimum = 1e7
             for v in range(self._V):
                 if adj[v][0] > 0 and passed_vertices[v] == False and values[v] > dist + adj[v][0]:
                     values[v] = dist + adj[v][0]
                     predecessors[self._vertex[v]] = (self.start_v, adj[v][1])
-
-            minimum = 1e7
-            for v in range(self._V):
                 if values[v] < minimum and passed_vertices[v] == False:
                     minimum = values[v]
                     vert_indx = v
+
             passed_vertices[vert_indx] = True
             self.start_v = self._vertex[vert_indx]
             dist = values[vert_indx]
@@ -92,14 +91,14 @@ class LinkedGraph:
         path_links = []
         path.append(stop_v)
         current_node = predecessors[stop_v]
-        
         while current_node:
             path_links.append(current_node[1])
             path.append(current_node[0])
             current_node = predecessors[current_node[0]]
+
         path.reverse()
         path_links.reverse()
-        
+
         return path, path_links
 
 
