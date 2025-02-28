@@ -33,7 +33,6 @@ class Ship:
                 elif go == -1:
                     self._coords = [(x, y - 1) for x, y in self._coords]
                     self._y -= 1
-            return self._coords
 
     def is_collide(self, ship):
         # проверка на столкновение с другим кораблем
@@ -123,11 +122,11 @@ class GamePole:
 
         for ship in self._ships:
             copy_coords = ship._coords[:]
-            ship._coords = ship.move(1)
+            ship.move(1)
             if check_coords(ship):
                 continue
             ship._coords = copy_coords[:]
-            ship._coords = ship.move(-1)
+            ship.move(-1)
             if not check_coords(ship):
                 ship._coords = copy_coords[:]
 
