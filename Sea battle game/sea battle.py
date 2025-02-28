@@ -86,7 +86,6 @@ class GamePole:
 
 
     def new_value(self, x,y, ship):
-
         ship.set_start_coords(x, y)
         if ship.is_out_pole(self._size):
             return False
